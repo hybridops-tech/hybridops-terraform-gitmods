@@ -4,7 +4,7 @@ Terraform module for provisioning a single Proxmox VM from a template. Supports 
 
 ## Module composition
 
-Standalone module. For multiple VMs, instantiate this module with caller-side `for_each`.
+Standalone module. For homogeneous groups of VMs, use [`proxmox/vm-multi`](../vm-multi/README.md).
 
 ## Registry publication
 
@@ -19,7 +19,7 @@ Appropriate for:
 - Bootstrap infrastructure that must exist before NetBox is available
 
 Not appropriate for:
-- None. For homogeneous pools, use this module with caller-side `for_each`.
+- Large homogeneous VM pools (use [`proxmox/vm-multi`](../vm-multi/README.md))
 
 ## Module reference
 
@@ -37,34 +37,6 @@ Local source (development):
 ```hcl
 module "vm" {
   source = "../../modules/proxmox/vm"
-}
-```
-
-## Multiple VMs
-
-Use caller-side `for_each` to provision a VM pool with this module:
-
-```hcl
-module "pool" {
-  source  = "hybridops-studio/vm/proxmox"
-  version = "0.1.0"
-
-  for_each = var.vms
-
-  node_name      = var.node_name
-  datastore_id   = var.datastore_id
-  template_vm_id = var.template_vm_id
-
-  vm_name = each.key
-  vm_id   = try(each.value.vm_id, null)
-
-  cpu_cores    = var.cpu_cores
-  memory_mb    = var.memory_mb
-  disk_size_gb = var.disk_size_gb
-
-  interfaces = try(each.value.interfaces, var.interfaces)
-
-  tags = concat(var.tags, [each.value.role])
 }
 ```
 
@@ -283,6 +255,7 @@ Typical outputs include:
 
 ## See also
 
+- Homogeneous VM groups: [`proxmox/vm-multi`](../vm-multi/README.md)
 - IPAM-backed allocation (NetBox):
   - [`netbox/vm-with-ipam`](../netbox/vm-with-ipam/README.md)
   - [`netbox/vm-multi-with-ipam`](../netbox/vm-multi-with-ipam/README.md)
