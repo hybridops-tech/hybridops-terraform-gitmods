@@ -12,11 +12,9 @@ Where practical, links are provided as **Registry + Source + Repository path** s
 
 | Module | Purpose | Registry | Source | Repo path |
 |---|---|---|---|---|
-| `vm` | Single Proxmox VM | [`hybridops-studio/vm/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm/proxmox) | `github.com/hybridops-studio/terraform-proxmox-vm` | [`vm/`](./vm) |
-| `vm-multi` | Multiple homogeneous VMs (wraps `vm`) | [`hybridops-studio/vm-multi/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm-multi/proxmox) | `github.com/hybridops-studio/terraform-proxmox-vm-multi` | [`vm-multi/`](./vm-multi) |
-| `lxc` | Single LXC container | [`hybridops-studio/lxc/proxmox`](https://registry.terraform.io/modules/hybridops-studio/lxc/proxmox) | `github.com/hybridops-studio/terraform-proxmox-lxc` | [`lxc/`](./lxc) |
-| `vm-with-ipam` | Single VM with NetBox IPAM | [`hybridops-studio/vm-with-ipam/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm-with-ipam/proxmox) | `github.com/hybridops-studio/terraform-proxmox-vm-with-ipam` | [`netbox/vm-with-ipam/`](./netbox/vm-with-ipam) |
-| `vm-multi-with-ipam` | Multiple VMs with NetBox IPAM (wraps `vm-with-ipam`) | [`hybridops-studio/vm-multi-with-ipam/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm-multi-with-ipam/proxmox) | `github.com/hybridops-studio/terraform-proxmox-vm-multi-with-ipam` | [`netbox/vm-multi-with-ipam/`](./netbox/vm-multi-with-ipam) |
+| `vm` | Single Proxmox VM | [`hybridops-studio/vm/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm/proxmox) | `git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/vm` | [`vm/`](./vm) |
+| `vm-multi` | Multiple homogeneous VMs (wraps `vm`) | [`hybridops-studio/vm-multi/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm-multi/proxmox) | `git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/vm-multi` | [`vm-multi/`](./vm-multi) |
+| `lxc` | Single LXC container | [`hybridops-studio/lxc/proxmox`](https://registry.terraform.io/modules/hybridops-studio/lxc/proxmox) | `git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/lxc` | [`lxc/`](./lxc) |
 
 ## Relationships
 
@@ -24,8 +22,6 @@ Where practical, links are provided as **Registry + Source + Repository path** s
 vm-multi
 └── wraps: vm
 
-vm-multi-with-ipam
-└── wraps: vm-with-ipam
 ```
 
 ## Platform-specific behavior
@@ -36,9 +32,21 @@ Windows guests do not support cloud-init networking. When `os_type` is `win10` o
 
 - Terraform `>= 1.5.0`
 - Proxmox provider: `bpg/proxmox`
-- NetBox provider: `e-breuninger/netbox` (IPAM modules only)
 - Proxmox VE: `>= 8.0`
 - Windows networking: see `vm` / `vm-multi` module READMEs (cloud-init networking is not supported on Windows guests).
+
+## HyOps pack source convention (to avoid module source conflicts)
+
+Use one explicit module source per HyOps pack, pinned by tag (preferred) or commit:
+
+```hcl
+module_source = "git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/<module>?ref=<tag>"
+```
+
+Examples:
+- `//proxmox/vm`
+- `//proxmox/vm-multi`
+- `//proxmox/lxc`
 
 ## Documentation convention
 
