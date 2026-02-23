@@ -12,6 +12,7 @@ variable "vms" {
   type = map(object({
     role                 = string
     vm_id                = optional(number)
+    vm_name              = optional(string)
     cloud_init_user_data = optional(string)
 
     interfaces = optional(list(object({

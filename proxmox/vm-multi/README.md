@@ -4,9 +4,15 @@ Terraform module for provisioning multiple Proxmox VMs with a shared resource pr
 
 This module wraps the single-VM module:
 
-- [`proxmox/vm`](../vm/README.md)
+- [`proxmox/vm`](https://github.com/hybridops-studio/hybridops-terraform-gitmods/tree/main/proxmox/vm/README.md)
 
 and provisions one VM per entry in `vms` using `for_each`.
+
+Logical-vs-physical naming:
+
+- The `vms` map keys are the logical VM identifiers (stable keys for outputs and callers).
+- Each VM entry may optionally set `vm_name` to override the physical Proxmox display name.
+- If `vm_name` is omitted, the logical key is used as the Proxmox VM name.
 
 ---
 
@@ -312,7 +318,7 @@ Refer to `variables.tf` for the authoritative schema.
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| `vms` | `map(object(...))` | Yes | VM name → per-VM metadata (e.g., `role`, optional `vm_id`, optional `cloud_init_user_data`, optional `interfaces`). |
+| `vms` | `map(object(...))` | Yes | Logical VM key → per-VM metadata (e.g., `role`, optional `vm_id`, optional `vm_name`, optional `cloud_init_user_data`, optional `interfaces`). |
 | `node_name` | `string` | Yes | Proxmox node name. |
 | `datastore_id` | `string` | Yes | Datastore for VM disks. |
 | `snippets_datastore_id` | `string` | No | Datastore for cloud-init snippets (default: `local`). |
@@ -338,13 +344,13 @@ Refer to `outputs.tf` for the authoritative structure. Key outputs typically inc
 
 | Output | Description |
 |--------|-------------|
-| `vms` | Complete map of all VM outputs keyed by VM name. |
-| `vm_ids` | Map of VM IDs keyed by VM name. |
-| `vm_names` | List of VM names. |
-| `ipv4_addresses` | Map of primary IPv4 addresses keyed by VM name (from guest agent). |
-| `ipv4_addresses_all` | Map of all IPv4 addresses keyed by VM name (from guest agent). |
-| `mac_addresses` | Map of primary MAC addresses keyed by VM name. |
-| `mac_addresses_all` | Map of all MAC addresses keyed by VM name. |
+| `vms` | Complete map of all VM outputs keyed by logical VM key (includes `vm_name` physical name). |
+| `vm_ids` | Map of VM IDs keyed by logical VM key. |
+| `vm_names` | List of logical VM keys. |
+| `ipv4_addresses` | Map of primary IPv4 addresses keyed by logical VM key (from guest agent). |
+| `ipv4_addresses_all` | Map of all IPv4 addresses keyed by logical VM key (from guest agent). |
+| `mac_addresses` | Map of primary MAC addresses keyed by logical VM key. |
+| `mac_addresses_all` | Map of all MAC addresses keyed by logical VM key. |
 | `node_name` | Proxmox node name. |
 | `tags` | Common tags applied to all VMs. |
 
