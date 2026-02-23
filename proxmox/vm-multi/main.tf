@@ -7,7 +7,7 @@ module "vm" {
   for_each = var.vms
 
   node_name = var.node_name
-  vm_name   = each.key
+  vm_name   = trimspace(try(each.value.vm_name, "")) != "" ? trimspace(try(each.value.vm_name, "")) : each.key
   vm_id     = try(each.value.vm_id, null)
 
   template_vm_id = var.template_vm_id
