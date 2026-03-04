@@ -81,6 +81,12 @@ variable "disk_size_gb" {
   default     = 20
 }
 
+variable "guest_agent_enabled" {
+  description = "Whether to enable the QEMU guest agent on cloned VMs"
+  type        = bool
+  default     = true
+}
+
 variable "datastore_id" {
   description = "Datastore ID for VM disks"
   type        = string
