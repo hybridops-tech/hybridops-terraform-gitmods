@@ -3,8 +3,9 @@
 # maintainer: HybridOps.Studio
 
 locals {
-  is_windows         = can(regex("^win", var.os_type))
-  indexed_interfaces = [for idx, nic in var.interfaces : merge(nic, { idx = idx })]
+  is_windows          = can(regex("^win", var.os_type))
+  clone_from_template = var.template_vm_id != null
+  indexed_interfaces  = [for idx, nic in var.interfaces : merge(nic, { idx = idx })]
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
@@ -44,11 +45,14 @@ resource "proxmox_virtual_environment_vm" "vm" {
     dedicated = var.memory_mb
   }
 
-  disk {
-    datastore_id = var.datastore_id
-    interface    = "scsi0"
-    size         = var.disk_size_gb
-    file_format  = "raw"
+  dynamic "disk" {
+    for_each = local.clone_from_template ? [] : [1]
+    content {
+      datastore_id = var.datastore_id
+      interface    = "scsi0"
+      size         = var.disk_size_gb
+      file_format  = "raw"
+    }
   }
 
   # Order is preserved from var.interfaces.
@@ -62,7 +66,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   agent {
-    enabled = true
+    enabled = var.guest_agent_enabled
   }
 
   operating_system {

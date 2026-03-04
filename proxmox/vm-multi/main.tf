@@ -16,6 +16,7 @@ module "vm" {
   cpu_type     = var.cpu_type
   memory_mb    = var.memory_mb
   disk_size_gb = var.disk_size_gb
+  guest_agent_enabled = var.guest_agent_enabled
 
   datastore_id = var.datastore_id
 
