@@ -6,6 +6,7 @@ locals {
   is_windows          = can(regex("^win", var.os_type))
   clone_from_template = var.template_vm_id != null
   indexed_interfaces  = [for idx, nic in var.interfaces : merge(nic, { idx = idx })]
+  use_network_data    = trimspace(var.cloud_init_network_data) != ""
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
@@ -18,6 +19,32 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
   source_raw {
     data      = var.cloud_init_user_data
     file_name = "${var.vm_name}-cloud-init-user.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_init_network_data" {
+  count = var.cloud_init_network_data != "" && !local.is_windows ? 1 : 0
+
+  content_type = "snippets"
+  datastore_id = var.snippets_datastore_id
+  node_name    = var.node_name
+
+  source_raw {
+    data      = var.cloud_init_network_data
+    file_name = "${var.vm_name}-cloud-init-network.yaml"
+  }
+}
+
+resource "proxmox_virtual_environment_file" "cloud_init_meta_data" {
+  count = var.cloud_init_meta_data != "" && !local.is_windows ? 1 : 0
+
+  content_type = "snippets"
+  datastore_id = var.snippets_datastore_id
+  node_name    = var.node_name
+
+  source_raw {
+    data      = var.cloud_init_meta_data
+    file_name = "${var.vm_name}-cloud-init-meta.yaml"
   }
 }
 
@@ -80,7 +107,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
       # Order is preserved and aligns to net0/ip0, net1/ip1, etc.
       dynamic "ip_config" {
-        for_each = local.indexed_interfaces
+        for_each = local.use_network_data ? [] : local.indexed_interfaces
         content {
           ipv4 {
             address = try(ip_config.value.ipv4.address, "dhcp")
@@ -97,7 +124,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
       }
 
       dynamic "dns" {
-        for_each = length(var.nameservers) > 0 ? [1] : []
+        for_each = (!local.use_network_data && length(var.nameservers) > 0) ? [1] : []
         content {
           servers = var.nameservers
         }
@@ -108,7 +135,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
         keys     = var.ssh_keys
       }
 
-      user_data_file_id = try(one(proxmox_virtual_environment_file.cloud_init_user_data[*].id), null)
+      user_data_file_id    = try(one(proxmox_virtual_environment_file.cloud_init_user_data[*].id), null)
+      meta_data_file_id    = try(one(proxmox_virtual_environment_file.cloud_init_meta_data[*].id), null)
+      network_data_file_id = try(one(proxmox_virtual_environment_file.cloud_init_network_data[*].id), null)
     }
   }
 }

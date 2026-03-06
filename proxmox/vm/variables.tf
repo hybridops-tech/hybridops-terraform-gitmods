@@ -135,6 +135,18 @@ variable "cloud_init_user_data" {
   default     = ""
 }
 
+variable "cloud_init_network_data" {
+  description = "Cloud-init network-config YAML (Linux only). When set, ip_config is not used."
+  type        = string
+  default     = ""
+}
+
+variable "cloud_init_meta_data" {
+  description = "Cloud-init meta-data YAML (Linux only). Required for NoCloud network-config."
+  type        = string
+  default     = ""
+}
+
 variable "snippets_datastore_id" {
   description = "Datastore for cloud-init snippets"
   type        = string
