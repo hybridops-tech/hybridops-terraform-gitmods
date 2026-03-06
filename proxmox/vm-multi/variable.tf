@@ -10,10 +10,12 @@ variable "node_name" {
 variable "vms" {
   description = "Map of VM names to their configuration"
   type = map(object({
-    role                 = string
-    vm_id                = optional(number)
-    vm_name              = optional(string)
-    cloud_init_user_data = optional(string)
+    role                    = string
+    vm_id                   = optional(number)
+    vm_name                 = optional(string)
+    cloud_init_user_data    = optional(string)
+    cloud_init_network_data = optional(string)
+    cloud_init_meta_data    = optional(string)
 
     interfaces = optional(list(object({
       bridge      = string
@@ -81,6 +83,12 @@ variable "disk_size_gb" {
   default     = 20
 }
 
+variable "guest_agent_enabled" {
+  description = "Whether to enable the QEMU guest agent on cloned VMs"
+  type        = bool
+  default     = true
+}
+
 variable "datastore_id" {
   description = "Datastore ID for VM disks"
   type        = string
@@ -130,6 +138,18 @@ variable "tags" {
 
 variable "cloud_init_user_data" {
   description = "Cloud-init user data default (Linux only). Per-VM cloud_init_user_data overrides this."
+  type        = string
+  default     = ""
+}
+
+variable "cloud_init_network_data" {
+  description = "Cloud-init network-config default (Linux only). Per-VM cloud_init_network_data overrides this."
+  type        = string
+  default     = ""
+}
+
+variable "cloud_init_meta_data" {
+  description = "Cloud-init meta-data default (Linux only). Per-VM cloud_init_meta_data overrides this."
   type        = string
   default     = ""
 }

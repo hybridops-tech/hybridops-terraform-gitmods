@@ -48,6 +48,12 @@ variable "disk_size_gb" {
   default     = 20
 }
 
+variable "guest_agent_enabled" {
+  description = "Whether to enable the QEMU guest agent for the VM"
+  type        = bool
+  default     = true
+}
+
 variable "datastore_id" {
   description = "Datastore ID for VM disks"
   type        = string
@@ -125,6 +131,18 @@ variable "on_boot" {
 
 variable "cloud_init_user_data" {
   description = "Cloud-init user data (Linux only)"
+  type        = string
+  default     = ""
+}
+
+variable "cloud_init_network_data" {
+  description = "Cloud-init network-config YAML (Linux only). When set, ip_config is not used."
+  type        = string
+  default     = ""
+}
+
+variable "cloud_init_meta_data" {
+  description = "Cloud-init meta-data YAML (Linux only). Required for NoCloud network-config."
   type        = string
   default     = ""
 }

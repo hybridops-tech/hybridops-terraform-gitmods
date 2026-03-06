@@ -12,10 +12,11 @@ module "vm" {
 
   template_vm_id = var.template_vm_id
 
-  cpu_cores    = var.cpu_cores
-  cpu_type     = var.cpu_type
-  memory_mb    = var.memory_mb
-  disk_size_gb = var.disk_size_gb
+  cpu_cores           = var.cpu_cores
+  cpu_type            = var.cpu_type
+  memory_mb           = var.memory_mb
+  disk_size_gb        = var.disk_size_gb
+  guest_agent_enabled = var.guest_agent_enabled
 
   datastore_id = var.datastore_id
 
@@ -38,6 +39,16 @@ module "vm" {
   cloud_init_user_data = (
     try(each.value.cloud_init_user_data, "") != "" ? each.value.cloud_init_user_data :
     (var.cloud_init_user_data != "" ? var.cloud_init_user_data : "")
+  )
+
+  cloud_init_network_data = (
+    try(each.value.cloud_init_network_data, "") != "" ? each.value.cloud_init_network_data :
+    (var.cloud_init_network_data != "" ? var.cloud_init_network_data : "")
+  )
+
+  cloud_init_meta_data = (
+    try(each.value.cloud_init_meta_data, "") != "" ? each.value.cloud_init_meta_data :
+    (var.cloud_init_meta_data != "" ? var.cloud_init_meta_data : "")
   )
 
   snippets_datastore_id = var.snippets_datastore_id
