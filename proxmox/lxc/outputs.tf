@@ -1,5 +1,5 @@
 # Proxmox LXC container module outputs
-# Maintainer:  HybridOps.Studio
+# Maintainer:  HybridOps.Tech
 
 output "vm_id" {
   description = "Container ID"

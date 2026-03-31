@@ -1,6 +1,6 @@
 # purpose: Provision a Proxmox VM with an ordered NIC list; Linux uses cloud-init initialization.
 # architecture decision: N/A
-# maintainer: HybridOps.Studio
+# maintainer: HybridOps.Tech
 
 locals {
   is_windows          = can(regex("^win", var.os_type))

@@ -1,5 +1,5 @@
 # Proxmox LXC container module
-# Maintainer:   HybridOps.Studio
+# Maintainer:   HybridOps.Tech
 
 resource "proxmox_virtual_environment_container" "lxc" {
   description = var.description

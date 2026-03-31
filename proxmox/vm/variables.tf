@@ -1,6 +1,6 @@
 # purpose: Inputs for Proxmox VM module.
 # architecture decision: N/A
-# maintainer: HybridOps.Studio
+# maintainer: HybridOps.Tech
 
 variable "node_name" {
   description = "Proxmox node name"

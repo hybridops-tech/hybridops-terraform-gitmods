@@ -1,5 +1,5 @@
 # Proxmox LXC container module variables
-# Maintainer:  HybridOps.Studio
+# Maintainer:  HybridOps.Tech
 
 variable "node_name" {
   description = "Proxmox node name"

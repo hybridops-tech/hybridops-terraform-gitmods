@@ -1,6 +1,6 @@
 # purpose: Provision multiple Proxmox VMs using the vm module, with default or per-VM NIC lists.
 # architecture decision: N/A
-# maintainer: HybridOps.Studio
+# maintainer: HybridOps.Tech
 
 module "vm" {
   source   = "../vm"

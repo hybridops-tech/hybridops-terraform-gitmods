@@ -1,6 +1,6 @@
 # purpose: Outputs for Proxmox multi-VM module.
 # architecture decision: N/A
-# maintainer: HybridOps.Studio
+# maintainer: HybridOps.Tech
 
 output "vms" {
   description = "Complete map of all VM outputs"

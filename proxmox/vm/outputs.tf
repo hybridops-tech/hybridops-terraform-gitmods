@@ -1,6 +1,6 @@
 # purpose: Outputs for Proxmox VM module.
 # architecture decision: N/A
-# maintainer: HybridOps.Studio
+# maintainer: HybridOps.Tech
 
 output "vm_id" {
   description = "VM ID"
