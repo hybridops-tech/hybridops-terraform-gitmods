@@ -1,6 +1,17 @@
 # Proxmox Terraform Modules
 
-Terraform modules for provisioning Proxmox VE infrastructure.
+Terraform modules for provisioning **Proxmox VE** infrastructure.
+
+This repository is the Git source for the Proxmox module set used in HybridOps and can also be consumed independently in Terraform or Terragrunt stacks.
+
+Use it when you want:
+- a reusable **single-VM** module
+- a reusable **multi-VM** wrapper for homogeneous fleets
+- a reusable **LXC** module
+
+Source repository: https://github.com/hybridops-tech/hybridops-terraform-gitmods
+
+If the modules are useful, a GitHub star is appreciated.
 
 This documentation is written to render correctly in both:
 - GitHub (monorepo / relative paths)
@@ -15,6 +26,12 @@ Where practical, links are provided as **Registry + Source + Repository path** s
 | `vm` | Single Proxmox VM | [`hybridops-studio/vm/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm/proxmox) | `git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/vm` | [`vm/`](./vm) |
 | `vm-multi` | Multiple homogeneous VMs (wraps `vm`) | [`hybridops-studio/vm-multi/proxmox`](https://registry.terraform.io/modules/hybridops-studio/vm-multi/proxmox) | `git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/vm-multi` | [`vm-multi/`](./vm-multi) |
 | `lxc` | Single LXC container | [`hybridops-studio/lxc/proxmox`](https://registry.terraform.io/modules/hybridops-studio/lxc/proxmox) | `git::https://github.com/hybridops-tech/hybridops-terraform-gitmods.git//proxmox/lxc` | [`lxc/`](./lxc) |
+
+## Start here
+
+- Want a single VM with direct inputs and outputs? Start with [`vm/`](./vm).
+- Want to stamp out multiple similar VMs from one input map? Start with [`vm-multi/`](./vm-multi).
+- Want a Proxmox container instead of a VM? Start with [`lxc/`](./lxc).
 
 ## Relationships
 
