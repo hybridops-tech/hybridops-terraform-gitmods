@@ -1,5 +1,7 @@
 # hybridops-terraform-gitmods
 
+[![Terraform validate](https://github.com/hybridops-tech/hybridops-terraform-gitmods/actions/workflows/terraform-validate.yml/badge.svg)](https://github.com/hybridops-tech/hybridops-terraform-gitmods/actions/workflows/terraform-validate.yml)
+
 Terraform modules for Proxmox VM, multi-VM, and LXC delivery — usable standalone, in Terragrunt stacks, or as part of HybridOps. Distributed via Git rather than the Terraform Registry.
 
 ## Modules
