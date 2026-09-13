@@ -147,6 +147,12 @@ variable "cloud_init_meta_data" {
   default     = ""
 }
 
+variable "preserve_existing" {
+  description = "Keep imported clone and cloud-init provenance unchanged during an explicit update-only recovery"
+  type        = bool
+  default     = false
+}
+
 variable "snippets_datastore_id" {
   description = "Datastore for cloud-init snippets"
   type        = string
