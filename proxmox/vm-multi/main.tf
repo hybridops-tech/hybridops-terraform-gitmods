@@ -52,4 +52,5 @@ module "vm" {
   )
 
   snippets_datastore_id = var.snippets_datastore_id
+  preserve_existing     = var.preserve_existing
 }

@@ -10,7 +10,7 @@ locals {
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
-  count = var.cloud_init_user_data != "" && !local.is_windows ? 1 : 0
+  count = var.cloud_init_user_data != "" && !local.is_windows && !var.preserve_existing ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -19,6 +19,26 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
   source_raw {
     data      = var.cloud_init_user_data
     file_name = "${var.vm_name}-cloud-init-user.yaml"
+  }
+}
+
+# Imported legacy VMs may already refer to a snippet whose contents are not
+# recoverable through the provider import API. The opt-in preservation
+# resource keeps that existing snippet and identity while the VM is resized.
+resource "proxmox_virtual_environment_file" "cloud_init_user_data_preserved" {
+  count = var.cloud_init_user_data != "" && !local.is_windows && var.preserve_existing ? 1 : 0
+
+  content_type = "snippets"
+  datastore_id = var.snippets_datastore_id
+  node_name    = var.node_name
+
+  source_raw {
+    data      = var.cloud_init_user_data
+    file_name = "${var.vm_name}-cloud-init-user.yaml"
+  }
+
+  lifecycle {
+    ignore_changes = [source_raw]
   }
 }
 
@@ -135,7 +155,11 @@ resource "proxmox_virtual_environment_vm" "vm" {
         keys     = var.ssh_keys
       }
 
-      user_data_file_id    = try(one(proxmox_virtual_environment_file.cloud_init_user_data[*].id), null)
+      user_data_file_id = (
+        var.preserve_existing
+        ? try(one(proxmox_virtual_environment_file.cloud_init_user_data_preserved[*].id), null)
+        : try(one(proxmox_virtual_environment_file.cloud_init_user_data[*].id), null)
+      )
       meta_data_file_id    = try(one(proxmox_virtual_environment_file.cloud_init_meta_data[*].id), null)
       network_data_file_id = try(one(proxmox_virtual_environment_file.cloud_init_network_data[*].id), null)
     }

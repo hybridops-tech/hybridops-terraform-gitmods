@@ -153,3 +153,9 @@ variable "cloud_init_meta_data" {
   type        = string
   default     = ""
 }
+
+variable "preserve_existing" {
+  description = "Keep imported clone and cloud-init provenance unchanged during an explicit update-only recovery"
+  type        = bool
+  default     = false
+}
