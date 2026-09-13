@@ -11,6 +11,7 @@ variable "vms" {
   description = "Map of VM names to their configuration"
   type = map(object({
     role                    = string
+    template_vm_id          = optional(number)
     vm_id                   = optional(number)
     vm_name                 = optional(string)
     cloud_init_user_data    = optional(string)

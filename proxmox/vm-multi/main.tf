@@ -10,7 +10,9 @@ module "vm" {
   vm_name   = trimspace(try(each.value.vm_name, "")) != "" ? trimspace(try(each.value.vm_name, "")) : each.key
   vm_id     = try(each.value.vm_id, null)
 
-  template_vm_id = var.template_vm_id
+  # A per-VM value lets an update-only run retain clone provenance for
+  # imported VMs that still have it, while leaving imported non-clones null.
+  template_vm_id = try(each.value.template_vm_id, var.template_vm_id)
 
   cpu_cores           = var.cpu_cores
   cpu_type            = var.cpu_type
