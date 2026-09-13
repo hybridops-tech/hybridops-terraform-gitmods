@@ -131,6 +131,12 @@ variable "on_boot" {
   default     = true
 }
 
+variable "started" {
+  description = "Whether the virtual machines should be running"
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   description = "Common VM tags applied to all VMs"
   type        = list(string)

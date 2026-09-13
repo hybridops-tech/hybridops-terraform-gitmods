@@ -74,6 +74,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   vm_id     = var.vm_id
   tags      = var.tags
   on_boot   = var.on_boot
+  started   = var.started
 
   dynamic "clone" {
     for_each = var.template_vm_id != null ? [1] : []

@@ -129,6 +129,12 @@ variable "on_boot" {
   default     = true
 }
 
+variable "started" {
+  description = "Whether the virtual machine should be running"
+  type        = bool
+  default     = true
+}
+
 variable "cloud_init_user_data" {
   description = "Cloud-init user data (Linux only)"
   type        = string

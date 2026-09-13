@@ -35,6 +35,7 @@ module "vm" {
 
   os_type = var.os_type
   on_boot = var.on_boot
+  started = var.started
 
   tags = concat(var.tags, [each.value.role])
 
