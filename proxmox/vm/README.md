@@ -207,7 +207,11 @@ When `os_type` is Linux, the module configures Proxmox `initialization.ip_config
 
 #### Windows VMs
 
-When `os_type` is Windows, the module does not apply Proxmox `initialization` for networking. NICs are attached, and the guest OS is expected to obtain DHCP or be configured post-provisioning.
+By default, Windows receives attached NICs only and is expected to obtain DHCP.
+Set `windows_config_drive = true` only when the source template has
+Cloudbase-Init installed and configured. In that opt-in mode the module emits
+the Proxmox initialization/config-drive metadata for each NIC; Cloudbase-Init
+applies the DHCP or static address inside Windows on first boot.
 
 ## Inputs
 
@@ -226,7 +230,8 @@ Refer to [`variables.tf`](./variables.tf) for the authoritative schema. Key inpu
 | `memory_mb` | no | Memory in MB (default: `2048`) |
 | `disk_size_gb` | no | Disk size in GB (default: `20`) |
 | `interfaces` | yes | Ordered NIC list (at least one NIC) |
-| `nameservers` | no | DNS servers (Linux only) |
+| `nameservers` | no | DNS servers delivered through guest initialization |
+| `windows_config_drive` | no | Enable Windows config-drive networking when Cloudbase-Init is installed (default: `false`) |
 | `ssh_username` | no | SSH username (Linux only) |
 | `ssh_keys` | no | SSH public keys (Linux only) |
 | `os_type` | no | Proxmox OS type (default: `l26`) |

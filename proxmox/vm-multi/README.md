@@ -304,11 +304,11 @@ Cloud-init applies addressing during first boot when `os_type` is Linux. DNS set
 
 ### Windows VMs
 
-Windows does not natively support cloud-init networking. VMs configured with `os_type = "win10"` or `os_type = "win11"`:
-
-- Attach NICs only
-- Boot with DHCP by default
-- Require post-provisioning configuration for static addressing (or DHCP reservations)
+Windows pools attach NICs and use DHCP by default. For a template with
+Cloudbase-Init installed, set `windows_config_drive = true` to deliver the
+same per-interface DHCP/static intent through the Proxmox config-drive.
+Without that explicit capability, static addressing remains a guest-side
+post-provisioning concern.
 
 ---
 
@@ -328,7 +328,8 @@ Refer to `variables.tf` for the authoritative schema.
 | `memory_mb` | `number` | Yes | Memory (MB) per VM. |
 | `disk_size_gb` | `number` | Yes | Disk size (GB) per VM. |
 | `interfaces` | `list(object)` | Yes | Ordered NIC list applied to all VMs unless overridden. |
-| `nameservers` | `list(string)` | No | DNS servers (Linux only). |
+| `nameservers` | `list(string)` | No | DNS servers delivered through guest initialization. |
+| `windows_config_drive` | `bool` | No | Enable Windows config-drive networking when Cloudbase-Init is installed (default: `false`). |
 | `ssh_username` | `string` | No | SSH username (default: `hybridops`). |
 | `ssh_keys` | `list(string)` | No | SSH public keys for the guest. |
 | `os_type` | `string` | No | Operating system type (default: `l26`). |

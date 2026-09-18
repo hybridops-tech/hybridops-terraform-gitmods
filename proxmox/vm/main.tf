@@ -1,16 +1,18 @@
-# purpose: Provision a Proxmox VM with an ordered NIC list; Linux uses cloud-init initialization.
+# purpose: Provision a Proxmox VM with an ordered NIC list; Linux uses cloud-init and
+# optionally Windows uses the same Proxmox config-drive through Cloudbase-Init.
 # architecture decision: N/A
 # maintainer: HybridOps.Tech
 
 locals {
-  is_windows          = can(regex("^win", var.os_type))
-  clone_from_template = var.template_vm_id != null
-  indexed_interfaces  = [for idx, nic in var.interfaces : merge(nic, { idx = idx })]
-  use_network_data    = trimspace(var.cloud_init_network_data) != ""
+  is_windows               = can(regex("^win", var.os_type))
+  use_windows_config_drive = local.is_windows && var.windows_config_drive
+  clone_from_template      = var.template_vm_id != null
+  indexed_interfaces       = [for idx, nic in var.interfaces : merge(nic, { idx = idx })]
+  use_network_data         = trimspace(var.cloud_init_network_data) != ""
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
-  count = var.cloud_init_user_data != "" && !local.is_windows && !var.preserve_existing ? 1 : 0
+  count = var.cloud_init_user_data != "" && (!local.is_windows || local.use_windows_config_drive) && !var.preserve_existing ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -26,7 +28,7 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
 # recoverable through the provider import API. The opt-in preservation
 # resource keeps that existing snippet and identity while the VM is resized.
 resource "proxmox_virtual_environment_file" "cloud_init_user_data_preserved" {
-  count = var.cloud_init_user_data != "" && !local.is_windows && var.preserve_existing ? 1 : 0
+  count = var.cloud_init_user_data != "" && (!local.is_windows || local.use_windows_config_drive) && var.preserve_existing ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -43,7 +45,7 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data_preserved" {
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_network_data" {
-  count = var.cloud_init_network_data != "" && !local.is_windows ? 1 : 0
+  count = var.cloud_init_network_data != "" && (!local.is_windows || local.use_windows_config_drive) ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -56,7 +58,7 @@ resource "proxmox_virtual_environment_file" "cloud_init_network_data" {
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_meta_data" {
-  count = var.cloud_init_meta_data != "" && !local.is_windows ? 1 : 0
+  count = var.cloud_init_meta_data != "" && (!local.is_windows || local.use_windows_config_drive) ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -122,7 +124,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   dynamic "initialization" {
-    for_each = !local.is_windows ? [1] : []
+    for_each = (!local.is_windows || local.use_windows_config_drive) ? [1] : []
     content {
       datastore_id = var.datastore_id
 
@@ -151,9 +153,12 @@ resource "proxmox_virtual_environment_vm" "vm" {
         }
       }
 
-      user_account {
-        username = var.ssh_username
-        keys     = var.ssh_keys
+      dynamic "user_account" {
+        for_each = local.is_windows ? [] : [1]
+        content {
+          username = var.ssh_username
+          keys     = var.ssh_keys
+        }
       }
 
       user_data_file_id = (

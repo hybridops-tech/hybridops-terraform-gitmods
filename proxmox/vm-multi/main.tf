@@ -33,9 +33,10 @@ module "vm" {
   ssh_username = var.ssh_username
   ssh_keys     = var.ssh_keys
 
-  os_type = var.os_type
-  on_boot = var.on_boot
-  started = var.started
+  os_type              = var.os_type
+  windows_config_drive = try(each.value.windows_config_drive, var.windows_config_drive)
+  on_boot              = var.on_boot
+  started              = var.started
 
   tags = concat(var.tags, [each.value.role])
 

@@ -17,6 +17,7 @@ variable "vms" {
     cloud_init_user_data    = optional(string)
     cloud_init_network_data = optional(string)
     cloud_init_meta_data    = optional(string)
+    windows_config_drive    = optional(bool)
 
     interfaces = optional(list(object({
       bridge      = string
@@ -102,7 +103,7 @@ variable "snippets_datastore_id" {
 }
 
 variable "nameservers" {
-  description = "DNS nameservers (Linux cloud-init only)"
+  description = "DNS nameservers delivered through guest initialization"
   type        = list(string)
   default     = []
 }
@@ -123,6 +124,12 @@ variable "os_type" {
   description = "Operating system type"
   type        = string
   default     = "l26"
+}
+
+variable "windows_config_drive" {
+  description = "Enable Proxmox initialization/config-drive delivery for Windows guests with Cloudbase-Init installed"
+  type        = bool
+  default     = false
 }
 
 variable "on_boot" {

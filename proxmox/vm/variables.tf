@@ -94,7 +94,7 @@ variable "interfaces" {
 }
 
 variable "nameservers" {
-  description = "DNS nameservers (Linux cloud-init only)"
+  description = "DNS nameservers delivered through guest initialization"
   type        = list(string)
   default     = []
 }
@@ -115,6 +115,12 @@ variable "os_type" {
   description = "Operating system type (l26 for Linux, win10/win11 for Windows)"
   type        = string
   default     = "l26"
+}
+
+variable "windows_config_drive" {
+  description = "Enable Proxmox initialization/config-drive delivery for a Windows guest with Cloudbase-Init installed"
+  type        = bool
+  default     = false
 }
 
 variable "tags" {
