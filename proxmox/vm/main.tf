@@ -10,9 +10,7 @@ locals {
 }
 
 resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
-  # Linux consumes these files through cloud-init; Windows consumes the same
-  # metadata through Cloudbase-Init on the Proxmox config-drive.
-  count = var.cloud_init_user_data != "" && !var.preserve_existing ? 1 : 0
+  count = var.cloud_init_user_data != "" && !local.is_windows && !var.preserve_existing ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -28,7 +26,7 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
 # recoverable through the provider import API. The opt-in preservation
 # resource keeps that existing snippet and identity while the VM is resized.
 resource "proxmox_virtual_environment_file" "cloud_init_user_data_preserved" {
-  count = var.cloud_init_user_data != "" && var.preserve_existing ? 1 : 0
+  count = var.cloud_init_user_data != "" && !local.is_windows && var.preserve_existing ? 1 : 0
 
   content_type = "snippets"
   datastore_id = var.snippets_datastore_id
@@ -124,10 +122,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   dynamic "initialization" {
-    # Proxmox selects NoCloud for Linux and configdrive2 for Windows from the
-    # VM operating-system type.  Both paths need the same declared network
-    # intent; Cloudbase-Init applies the Windows config-drive metadata.
-    for_each = [1]
+    for_each = !local.is_windows ? [1] : []
     content {
       datastore_id = var.datastore_id
 
@@ -156,12 +151,9 @@ resource "proxmox_virtual_environment_vm" "vm" {
         }
       }
 
-      dynamic "user_account" {
-        for_each = local.is_windows ? [] : [1]
-        content {
-          username = var.ssh_username
-          keys     = var.ssh_keys
-        }
+      user_account {
+        username = var.ssh_username
+        keys     = var.ssh_keys
       }
 
       user_data_file_id = (
