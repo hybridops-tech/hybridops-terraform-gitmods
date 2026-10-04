@@ -6,7 +6,6 @@
 locals {
   is_windows               = can(regex("^win", var.os_type))
   use_windows_config_drive = local.is_windows && var.windows_config_drive
-  clone_from_template      = var.template_vm_id != null
   indexed_interfaces       = [for idx, nic in var.interfaces : merge(nic, { idx = idx })]
   use_network_data         = trimspace(var.cloud_init_network_data) != ""
 }
@@ -96,7 +95,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   }
 
   dynamic "disk" {
-    for_each = local.clone_from_template ? [] : [1]
+    for_each = var.preserve_existing ? [] : [1]
     content {
       datastore_id = var.datastore_id
       interface    = "scsi0"
