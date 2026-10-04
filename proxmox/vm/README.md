@@ -228,7 +228,7 @@ Refer to [`variables.tf`](./variables.tf) for the authoritative schema. Key inpu
 | `cpu_cores` | no | CPU cores (default: `2`) |
 | `cpu_type` | no | CPU type (default: `host`) |
 | `memory_mb` | no | Memory in MB (default: `2048`) |
-| `disk_size_gb` | no | Disk size in GB (default: `20`) |
+| `disk_size_gb` | no | Disk size in GB, including cloned VMs; must not be smaller than the template disk (default: `20`) |
 | `interfaces` | yes | Ordered NIC list (at least one NIC) |
 | `nameservers` | no | DNS servers delivered through guest initialization |
 | `windows_config_drive` | no | Enable Windows config-drive networking when Cloudbase-Init is installed (default: `false`) |
