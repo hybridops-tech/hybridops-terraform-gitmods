@@ -34,6 +34,3 @@ Thumbs.db
 *.pem
 *.key
 id_rsa*
-
-.misc/
-.draft/
